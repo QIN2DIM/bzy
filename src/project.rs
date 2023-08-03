@@ -1,12 +1,15 @@
+use std::fs::File;
+use std::io::{BufRead, BufReader};
 use std::path::{Path, PathBuf};
 use std::{fs, process};
 
 use anyhow::{Ok, Result};
 use env_logger;
 use log::LevelFilter;
-use reqwest::{Client, Proxy};
+use reqwest::Client;
 
-const HTTPS_PROXY: &str = "http://127.0.0.1:7890";
+const URL_TASKS: &str =
+    "https://dl.capoo.xyz/https://github.com/QIN2DIM/bzy-rs/releases/download/bzy-db/BenZiYunMining.txt";
 
 #[derive(Debug, Default)]
 pub struct Project {
@@ -33,10 +36,8 @@ impl Project {
     }
 
     pub async fn pull_bzy_index(&self) -> Result<()> {
-        let url = "https://github.com/QIN2DIM/bzy-rs/releases/download/bzy-db/BenZiYunMining.txt";
-
+        let url = URL_TASKS;
         let client = Client::builder()
-            .proxy(Proxy::all(HTTPS_PROXY)?)
             .user_agent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36 Edg/115.0.1901.188")
             .build()?;
 
@@ -45,5 +46,13 @@ impl Project {
         fs::write(&self.bzy_index, bytes_db)?;
 
         Ok(())
+    }
+
+    pub fn load_bzy_index(&self) -> Result<Vec<String>> {
+        let file = File::open(&self.bzy_index)?;
+        let reader = BufReader::new(file);
+        let urls = reader.lines().map(|l| l.unwrap()).collect();
+
+        Ok(urls)
     }
 }
