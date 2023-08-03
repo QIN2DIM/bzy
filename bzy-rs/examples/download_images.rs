@@ -4,16 +4,15 @@ use std::path::PathBuf;
 use anyhow::{Ok, Result};
 use chrono::prelude::*;
 use log::{error, info};
-use rand::seq::SliceRandom;
 use reqwest::Client;
 use tokio::time::Instant;
 
 use bzy_rs::project::Project;
 
-const BATCH_SIZE: usize = 10;
+const BATCH_SIZE: usize = 20;
 
 async fn run_collector(project: &Project) -> Result<()> {
-    let mut urls = project.load_bzy_index()?;
+    let urls = project.load_bzy_index()?;
     info!("读入 {} 条待处理链接", urls.len());
 
     info!("正在下载随机样本 - batch={BATCH_SIZE}");
@@ -26,7 +25,7 @@ async fn run_collector(project: &Project) -> Result<()> {
     }
 
     // 打乱任务队列
-    urls.shuffle(&mut rand::thread_rng());
+    // urls.shuffle(&mut rand::thread_rng());
 
     // 初始化协程池
     let client = Client::new();

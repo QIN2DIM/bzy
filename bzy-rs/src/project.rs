@@ -9,7 +9,7 @@ use log::LevelFilter;
 use reqwest::Client;
 
 const URL_TASKS: &str =
-    "https://dl.capoo.xyz/https://github.com/QIN2DIM/bzy-rs/releases/download/bzy-db/BenZiYunMining.txt";
+    "https://dl.capoo.xyz/https://github.com/QIN2DIM/bzy/releases/download/bzy-db/BenZiYunMining.txt";
 
 #[derive(Debug, Default)]
 pub struct Project {
